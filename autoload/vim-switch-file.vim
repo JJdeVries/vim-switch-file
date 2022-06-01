@@ -1,5 +1,5 @@
 
-function! example-plugin#DisplayTime(...)
+function! vim_switch_file#SwitchFile(...)
     if a:0 > 0 && (a:1 == "d" || a:1 == "t")
         if a:1 == "d"
             echo strftime("%b %d")
