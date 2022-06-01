@@ -1,12 +1,12 @@
 
 function! VimSwitchFile#SwitchFile(...)
-    if a:0 > 0 && (a:1 == "d" || a:1 == "t")
-        if a:1 == "d"
-            echo strftime("%b %d")
-        elseif a:1 == "t"
-            echo strftime("%H:%M")
-        endif
+    let b:ext=expand('%:e')
+
+    if ext == 'cpp' || ext == 'c'
+        echo "In cpp file"
+    elseif ext == "hpp" || ext = "h"
+        echo "In cpp header file"
     else
-        echo strftime("%b %d %H:%M")
+        echo "Unsupported file"
     endif
 endfunction
