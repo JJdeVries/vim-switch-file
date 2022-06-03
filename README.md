@@ -8,6 +8,14 @@ file to open.
 The switch can be invoked by calling `:SwitchFile` from within a c/cpp file. The file will be opened
 in a vsplit. A suggestion is to add a mapping e.g. `nnoremap <Leader>s :SwitchFile<CR>`.
 
+## Installation
+
+### Vundle
+Place this in the plugin section of your `.vimrc`
+```
+Plugin 'JJdeVries/vim-switch-file'
+```
+
 ## The mapping
 The mapped file extensions are as follows:
 | file\_extension | mapped\_extensions |
