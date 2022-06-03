@@ -45,32 +45,33 @@ function! VimSwitchFile#SwitchFile(...)
     let b:proj_root=VimSwitchFile#FindProjectRoot()
 
     let b:find_call = 'find "' . b:proj_root . '" -regex "' . b:desired . '"'
+    echo "Find call " . b:find_call
     let b:found_files = split(system(b:find_call), '\n')
 
     if len(b:found_files) == 1
         execute 'vsplit ' . get(b:found_files, 0)
     elseif len(b:found_files) == 0
-        call s:WarnMsg("Did not find file: " . b:desired)
+        call s:WarnMsg("Did not find any file with the expected extension")
         return
     else
-        let b:idx = 0
+        let b:print_idx = 0
         for b:i in b:found_files
-            echo b:idx . ": " . b:i
-            let b:idx += 1
+            echo b:print_idx . ": " . b:i
+            let b:print_idx += 1
         endfor
         while 1
             call inputsave()
-            let b:idx_str = input('Which file to open (q to quit)? ')
+            let b:idx_str = input('Which file to open (q to quit    )? ')
             call inputrestore()
             let b:idx = str2nr(b:idx_str)
 
             if b:idx_str == "q"
                 break
             elseif !(b:idx_str =~# '^\d\+$')
-                call s:WarnMsg(" input is a string")
+                call s:WarnMsg(" input is a not a (positive) number")
                 continue
             elseif len(b:found_files) <= b:idx
-                call s:WarnMsg(" Given index '" . b:idx . "' is too high")
+                call s:WarnMsg(" Given index '" . b:idx . "' is too high, should be below " . len(b:found_files))
                 continue
             endif
 
