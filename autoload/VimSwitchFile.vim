@@ -20,11 +20,11 @@ endfunction
 
 function! VimSwitchFile#GetExpectedExtRegex( ext )
     if a:ext == "cpp"
-        return "\.\\(hpp\\|h\\)"
+        return "\\.\\(hpp\\|h\\)"
     elseif a:ext == "hpp"
-        return "\.\\(cpp\\|c\\)"
+        return "\\.\\(cpp\\|c\\)"
     if a:ext == "c"
-        return "\.h"
+        return "\\.h"
     else
         return ""
     endif
