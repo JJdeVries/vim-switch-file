@@ -64,6 +64,44 @@ function! s:GetExpectedExtRegex( ext )
     endif
 endfunction
 
+function! s:OpenWindow( file )
+    " Let's first check if the file is already open
+    let l:winid = bufwinid(a:file)
+    if l:winid != -1
+        call win_gotoid(l:winid)
+        return
+    endif
+
+    " TODO: Probably we want to configure the vsplit (or optionally give as an argument?!)
+    execute 'vsplit ' . a:file
+endfunction
+
+function! s:PickFile( files )
+    let l:print_idx = 0
+    for l:i in a:files
+        echo l:print_idx . ": " . l:i
+        let l:print_idx += 1
+    endfor
+    while 1
+        call inputsave()
+        let l:idx_str = input('Which file to open (q to quit)? ')
+        call inputrestore()
+        let l:idx = str2nr(l:idx_str)
+
+        if l:idx_str == "q"
+            return ""
+        elseif !(l:idx_str =~# '^\d\+$')
+            call s:WarnMsg(" input is a not a (positive) number")
+            continue
+        elseif len(a:files) <= l:idx
+            call s:WarnMsg(" Given index '" . l:idx . "' is too high, should be below " . len(a:files))
+            continue
+        endif
+
+        return get(a:files, l:idx)
+    endwhile
+endfunction
+
 function! VimSwitchFile#SwitchFile(...)
     let l:filename=expand('%:t:r')
     let l:ext=expand('%:e')
@@ -80,35 +118,16 @@ function! VimSwitchFile#SwitchFile(...)
     let l:find_call = "find '" . l:proj_root . "' -regex '.*/" . l:filename . l:new_ext_regex . "'"
     let l:found_files = split(system(l:find_call), '\n')
 
-    if len(l:found_files) == 1
-        execute 'vsplit ' . get(l:found_files, 0)
-    elseif len(l:found_files) == 0
+    if len(l:found_files) == 0
+        let l:open_file = ""
         call s:WarnMsg("Did not find a file with the configured extensions")
-        return
+    elseif len(l:found_files) == 1
+        let l:open_file = get(l:found_files, 0)
     else
-        let l:print_idx = 0
-        for l:i in l:found_files
-            echo l:print_idx . ": " . l:i
-            let l:print_idx += 1
-        endfor
-        while 1
-            call inputsave()
-            let l:idx_str = input('Which file to open (q to quit)? ')
-            call inputrestore()
-            let l:idx = str2nr(l:idx_str)
+        let l:open_file = call s:PickFile(l:found_files)
+    endif
 
-            if l:idx_str == "q"
-                break
-            elseif !(l:idx_str =~# '^\d\+$')
-                call s:WarnMsg(" input is a not a (positive) number")
-                continue
-            elseif len(l:found_files) <= l:idx
-                call s:WarnMsg(" Given index '" . l:idx . "' is too high, should be below " . len(l:found_files))
-                continue
-            endif
-
-            execute 'vsplit ' . get(l:found_files, l:idx)
-            break
-        endwhile
+    if l:open_file != ""
+        call s:OpenWindow(l:open_file)
     endif
 endfunction

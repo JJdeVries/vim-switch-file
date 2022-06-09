@@ -44,6 +44,5 @@ A number of possible optimizations can still be implemented.
 
 * Stop searching upwards if we find a `.git` folder.
 * Possibility to customize the project root detection (which file/folder to find)
-* Avoid opening another vsplit if we already have the file open.
 * Possibility to configure how to open the other file (e.g. split, another tab, another window).
 * Avoid searching upwards if the header/source file is in the same directory.
